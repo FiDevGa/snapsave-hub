@@ -4,10 +4,11 @@
   "packageManager": "pnpm@8.15.0",
   "license": "MIT",
 "scripts": {
-  "build": "pnpm run typecheck && pnpm -r --if-present run build",
-  "typecheck:libs": "tsc --build",
-  "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck"
-  },
+  "start": "next start",
+  "build": "next build",
+  "serve": "vite preview",
+  "test": "jest"
+   },
   "private": true,
   "devDependencies": {
     "prettier": "^3.8.3",
