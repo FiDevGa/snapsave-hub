@@ -1,0 +1,264 @@
+# 🚀 SnapSave Hub — Universal Social Media Downloader Specification
+
+Build a fully production-ready, modern, ultra-powerful web application called **SnapSave Hub** that supports downloading media from ALL major social media, video, streaming, and content-sharing platforms.
+
+The app must automatically detect the platform from the URL and provide reliable downloading for videos and audio.
+
+---
+
+# 🌍 UNIVERSAL PLATFORM SUPPORT (VERY IMPORTANT)
+
+The app MUST support ALL social media and media-sharing platforms supported by yt-dlp or compatible extractors.
+
+This includes, but is NOT limited to:
+
+## 🎥 Video Platforms
+
+* YouTube
+* Vimeo
+* Dailymotion
+* Twitch
+* Streamable
+* Bilibili
+* Rutube
+* Veoh
+* BitChute
+* TED
+* PeerTube
+* Brightcove
+
+## 📱 Social Media Platforms
+
+* TikTok
+* Instagram
+* Facebook
+* Twitter/X
+* Snapchat
+* Threads
+* Reddit
+* Pinterest
+* Tumblr
+* Likee
+* Triller
+* Lemon8
+* VK
+* Weibo
+
+## 🎵 Music & Audio Platforms
+
+* SoundCloud
+* Mixcloud
+* Audiomack
+* Bandcamp
+
+## 📺 Streaming & Live Platforms
+
+* Twitch Clips
+* Twitch VODs
+* Kick
+* Trovo
+* AfreecaTV
+
+## 🌐 Additional Supported Platforms
+
+* Any platform supported by yt-dlp
+* Any compatible public video URL
+* Future platforms through automatic extractor updates
+
+---
+
+# 🧠 AUTO PLATFORM DETECTION
+
+The system must:
+
+* Automatically detect platform from pasted URL
+* Show platform logo dynamically
+* Load platform-specific UI automatically
+* Route to correct extractor automatically
+* Handle unknown URLs safely
+
+---
+
+# 📄 DYNAMIC PLATFORM PAGES
+
+Instead of hardcoding only a few apps, the system should:
+
+* Dynamically generate platform pages
+* Dynamically load logos/icons
+* Dynamically detect supported features
+* Allow future platform expansion without rewriting the app
+
+Examples:
+
+* /youtube
+* /instagram
+* /tiktok
+* /soundcloud
+* /kick
+* /reddit
+
+---
+
+# 🎬 DOWNLOAD SUPPORT
+
+The app must support:
+
+## MP4 Download
+
+* Video + audio merged
+* High quality support
+* Long videos
+* Large files
+
+## MP3 Download
+
+* Clean audio extraction
+* Metadata support
+* Album art when possible
+
+---
+
+# ⚡ RELIABILITY REQUIREMENTS
+
+The app must:
+
+* Retry failed downloads
+* Detect unsupported formats
+* Use fallback extraction methods
+* Prevent crashes
+* Handle rate limits gracefully
+* Handle long downloads reliably
+
+---
+
+# 🎨 UI REQUIREMENTS
+
+Create ONE unified global sidebar for the entire application.
+
+The sidebar must contain EVERYTHING in one place:
+
+* Home
+* All supported social media platforms
+* Platform categories
+* Recent downloads
+* Favorites
+* Settings
+* Source Code page
+* About page
+* Support page
+
+Sidebar Requirements:
+
+* One single sidebar used across the whole app
+* Persistent global navigation
+* Collapsible on mobile
+* Smooth animations
+* Dynamic platform icons
+* Search bar for apps/platforms
+* Modern glassmorphism design
+* Responsive mobile layout
+* Active page highlighting
+* Expandable platform categories
+* Fast navigation between all sections
+* Sticky/fixed sidebar behavior
+* Smooth transitions between pages
+
+---
+
+# 💻 SOURCE CODE PAGE (PASSWORD PROTECTED)
+
+Create a dedicated sidebar page called:
+
+## 💻 Source Code
+
+Requirements:
+
+* Accessible from the sidebar
+* Protected with a custom password set by the owner
+* Hidden from normal users until authenticated
+* Modern code editor style UI
+* Responsive design
+
+Features:
+
+* File explorer sidebar
+* View frontend and backend source files
+* Syntax highlighting
+* Copy code button
+* Search inside files
+* Tabs for multiple opened files
+* Read-only mode for visitors
+
+Security Requirements:
+
+* Never expose environment variables
+* Never expose API secrets
+* Protect sensitive backend files
+* Secure authentication required before access
+* Store password securely
+* Prevent unauthorized access attempts
+
+UI Requirements:
+
+* VS Code inspired layout
+* Dark/light themes
+* Smooth animations
+* Responsive code panels
+* Glassmorphism styling
+
+---
+
+# ⚙️ SETTINGS PAGE
+
+Include:
+
+* Theme customization
+* Language settings
+* Download defaults
+* UI personalization
+* Performance settings
+
+---
+
+# 🔒 SECURITY REQUIREMENTS
+
+The app must:
+
+* Sanitize all URLs
+* Prevent command injection
+* Limit abusive requests
+* Protect sensitive endpoints
+* Secure password-protected pages
+
+---
+
+# 🤖 SELF-REPAIR & AUTO-FIX SYSTEM
+
+The AI/development system must:
+
+* Scan for syntax errors
+* Repair broken code automatically
+* Detect missing dependencies
+* Fix frontend crashes
+* Fix backend crashes
+* Validate routes
+* Validate API endpoints
+* Validate downloads
+* Prevent HTTP 500 errors
+
+---
+
+# ✅ FINAL REQUIREMENTS
+
+✔ Supports ALL social media apps possible
+✔ Dynamic platform support
+✔ MP4 downloads work
+✔ MP3 downloads work
+✔ Long videos supported
+✔ Sidebar navigation works
+✔ Dedicated pages work
+✔ Settings fully customizable
+✔ Premium modern UI
+✔ Mobile responsive
+✔ No crashes or raw errors
+✔ Production-ready deployment

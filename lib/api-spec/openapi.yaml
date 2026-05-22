@@ -1,0 +1,494 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: SnapSave Hub API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: download
+    description: Media download operations
+  - name: platforms
+    description: Platform information
+  - name: history
+    description: Download history and favorites
+  - name: auth
+    description: Authentication operations
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /platforms:
+    get:
+      operationId: listPlatforms
+      tags: [platforms]
+      summary: List all supported platforms
+      description: Returns all supported platforms with metadata
+      responses:
+        "200":
+          description: List of platforms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Platform"
+
+  /download/info:
+    post:
+      operationId: getMediaInfo
+      tags: [download]
+      summary: Get info about a media URL
+      description: Detects platform, extracts media metadata and available formats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MediaInfoInput"
+      responses:
+        "200":
+          description: Media info retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaInfo"
+        "400":
+          description: Invalid URL or unsupported platform
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Unable to extract media info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /download/start:
+    post:
+      operationId: startDownload
+      tags: [download]
+      summary: Start a download job
+      description: Kicks off an async download job for a given URL and format
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DownloadInput"
+      responses:
+        "202":
+          description: Download job started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadJob"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /download/{jobId}/status:
+    get:
+      operationId: getDownloadStatus
+      tags: [download]
+      summary: Poll download job status
+      description: Returns the current status and progress of a download job
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Job status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadJob"
+        "404":
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /download/{jobId}/file:
+    get:
+      operationId: downloadFile
+      tags: [download]
+      summary: Download the completed file
+      description: Streams the completed download file to the client
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: File download
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Job not found or not complete
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /history:
+    get:
+      operationId: listHistory
+      tags: [history]
+      summary: List recent downloads
+      description: Returns recent download history
+      responses:
+        "200":
+          description: Download history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DownloadRecord"
+
+  /history/favorites:
+    get:
+      operationId: listFavorites
+      tags: [history]
+      summary: List favorited downloads
+      description: Returns favorited download records
+      responses:
+        "200":
+          description: Favorite downloads
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DownloadRecord"
+
+  /history/{id}/favorite:
+    patch:
+      operationId: toggleFavorite
+      tags: [history]
+      summary: Toggle favorite on a download record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadRecord"
+        "404":
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /history/{id}:
+    delete:
+      operationId: deleteHistory
+      tags: [history]
+      summary: Delete a download record from history
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /stats:
+    get:
+      operationId: getStats
+      tags: [history]
+      summary: Get download statistics summary
+      description: Returns aggregated stats like total downloads, platforms used, top formats
+      responses:
+        "200":
+          description: Stats summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stats"
+
+  /auth/source-code:
+    post:
+      operationId: authenticateSourceCode
+      tags: [auth]
+      summary: Authenticate for source code page access
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthInput"
+      responses:
+        "200":
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResult"
+        "401":
+          description: Invalid password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    Platform:
+      type: object
+      required: [id, name, category, color, domains]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+          enum: [video, social, music, streaming, other]
+        color:
+          type: string
+        domains:
+          type: array
+          items:
+            type: string
+        supportsAudio:
+          type: boolean
+        supportsVideo:
+          type: boolean
+
+    MediaInfoInput:
+      type: object
+      required: [url]
+      properties:
+        url:
+          type: string
+
+    MediaFormat:
+      type: object
+      required: [formatId, ext, quality]
+      properties:
+        formatId:
+          type: string
+        ext:
+          type: string
+        quality:
+          type: string
+        filesize:
+          type: ["integer", "null"]
+        hasAudio:
+          type: boolean
+        hasVideo:
+          type: boolean
+        fps:
+          type: ["number", "null"]
+        width:
+          type: ["integer", "null"]
+        height:
+          type: ["integer", "null"]
+
+    MediaInfo:
+      type: object
+      required: [url, platform, title, formats]
+      properties:
+        url:
+          type: string
+        platform:
+          type: string
+        platformId:
+          type: string
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        thumbnail:
+          type: ["string", "null"]
+        duration:
+          type: ["number", "null"]
+        uploader:
+          type: ["string", "null"]
+        uploadDate:
+          type: ["string", "null"]
+        viewCount:
+          type: ["integer", "null"]
+        formats:
+          type: array
+          items:
+            $ref: "#/components/schemas/MediaFormat"
+
+    DownloadInput:
+      type: object
+      required: [url, type]
+      properties:
+        url:
+          type: string
+        type:
+          type: string
+          enum: [mp4, mp3]
+        formatId:
+          type: ["string", "null"]
+        quality:
+          type: ["string", "null"]
+        title:
+          type: ["string", "null"]
+        platform:
+          type: ["string", "null"]
+        thumbnail:
+          type: ["string", "null"]
+
+    DownloadJob:
+      type: object
+      required: [jobId, status, url, type, createdAt]
+      properties:
+        jobId:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, completed, failed]
+        url:
+          type: string
+        type:
+          type: string
+          enum: [mp4, mp3]
+        title:
+          type: ["string", "null"]
+        platform:
+          type: ["string", "null"]
+        thumbnail:
+          type: ["string", "null"]
+        progress:
+          type: ["number", "null"]
+        error:
+          type: ["string", "null"]
+        filename:
+          type: ["string", "null"]
+        filesize:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+
+    DownloadRecord:
+      type: object
+      required: [id, url, type, platform, title, createdAt, favorited]
+      properties:
+        id:
+          type: integer
+        url:
+          type: string
+        type:
+          type: string
+        platform:
+          type: string
+        title:
+          type: string
+        thumbnail:
+          type: ["string", "null"]
+        filesize:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+        favorited:
+          type: boolean
+
+    Stats:
+      type: object
+      required: [totalDownloads, totalFavorites, platformBreakdown, formatBreakdown]
+      properties:
+        totalDownloads:
+          type: integer
+        totalFavorites:
+          type: integer
+        platformBreakdown:
+          type: array
+          items:
+            type: object
+            required: [platform, count]
+            properties:
+              platform:
+                type: string
+              count:
+                type: integer
+        formatBreakdown:
+          type: array
+          items:
+            type: object
+            required: [format, count]
+            properties:
+              format:
+                type: string
+              count:
+                type: integer
+
+    AuthInput:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+
+    AuthResult:
+      type: object
+      required: [token]
+      properties:
+        token:
+          type: string
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
